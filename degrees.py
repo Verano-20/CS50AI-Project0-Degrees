@@ -84,6 +84,31 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
+def getsolution(node, target):
+    """
+    Function to check if node is target, and if so return solution list.
+    """
+    # Check if node is target
+    if node.state==target:
+        actions=[]
+        cells=[]
+        # Loop back through each node taken to get to solution
+        while node.parent is not None:
+            actions.append(node.action)
+            cells.append(node.state)
+            node=node.parent
+        # Reverse lists to get in forward order
+        actions.reverse()
+        cells.reverse()
+        # Solution
+        solution=[]
+        for i in range(len(actions)):
+            solution.append((actions[i], cells[i]))
+        return solution
+    else:
+        return False
+
+
 def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
@@ -91,9 +116,41 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    # Get start node
+    start=Node(state=source, parent=None, action=None)
 
-    # TODO
-    raise NotImplementedError
+    # Queue frontier for breadth first search
+    frontier=QueueFrontier()
+
+    # Add start to frontier
+    frontier.add(start)
+
+    # Track explored states
+    explored=set()
+
+    # Create loop
+    while True:
+        # If there are no states to explore, return None
+        if frontier.empty():
+            return None
+        
+        # Remove a node from the frontier
+        node=frontier.remove()
+
+        # Add state to explored
+        explored.add(node.state)
+
+        # Add neighbouring nodes to frontier if not target
+        for action, state in neighbors_for_person(node.state):
+            if not frontier.contains_state(state) and state not in explored:
+                # Create node
+                child=Node(state=state, parent=node, action=action)
+                # Check if node is target when adding to frontier to improve efficiency
+                solution=getsolution(child, target)
+                if solution:
+                    return solution
+                # If not target, add to frontier
+                frontier.add(child)
 
 
 def person_id_for_name(name):
