@@ -1,5 +1,5 @@
 # CS50AI-PSET0-Degrees
-My submission for CS50AI  pset0 - degrees
+My submission for CS50AI Project 0 - degrees
 
 A Python program which determines how many 'degrees of separation' apart two actors are.  
 Using data from IMDb, actors are linked by movies they starred in and other actors who also starred in those movies.
